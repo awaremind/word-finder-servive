@@ -3,7 +3,6 @@ package com.wordservice;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -22,7 +21,7 @@ public class WordFinderStreamsService {
       String line;
       while ((line = reader.readLine()) != null) {
         if (line.length() < 10) {
-          wordSet.add(line.trim());
+          wordSet.add(line.toLowerCase().trim());
         }
       }
     } catch (Exception e) {
@@ -30,18 +29,15 @@ public class WordFinderStreamsService {
     }
   }
 
-  private boolean isValidWordChain(String word, Set<String> visitedWords) {
-    if (word.length() == 1) {
+  private boolean isValidWord(String word) {
+    if (word.length() == 2 && (word.matches(".*[ai].*"))) {
       return wordSet.contains(word);
     }
     for (int i = 0; i < word.length(); i++) {
-      String subWord = word.substring(0, i) + word.substring(i + 1);
-      if (wordSet.contains(subWord) && !visitedWords.contains(subWord)) {
-        visitedWords.add(subWord);
-        if (isValidWordChain(subWord, visitedWords)) {
-          return true;
-        }
-        visitedWords.remove(subWord);
+      StringBuilder sb = new StringBuilder(word);
+      sb.deleteCharAt(i);
+      if (wordSet.contains(sb.toString()) && isValidWord(sb.toString())) {
+        return true;
       }
     }
     return false;
@@ -49,7 +45,7 @@ public class WordFinderStreamsService {
 
   public Set<String> findValidWords() {
     return wordSet.stream().parallel()
-        .filter(word -> word.length() == 9 && isValidWordChain(word, new HashSet<>()))
+        .filter(word -> word.length() == 9 && isValidWord(word))
         .collect(Collectors.toSet());
   }
 

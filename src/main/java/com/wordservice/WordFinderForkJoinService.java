@@ -27,7 +27,6 @@ public class WordFinderForkJoinService {
       List<String> nineLetterWords = findNineLetterWords();
       List<String> result = new ArrayList<>();
 
-
       ForkJoinPool forkJoinPool = new ForkJoinPool();
       result = forkJoinPool.invoke(new WordFinderTask(nineLetterWords));
 
@@ -89,7 +88,7 @@ public class WordFinderForkJoinService {
       }
 
       private boolean isValidSequence(String word) {
-        if (word.length() == 1) {
+        if (word.length() == 2 && word.matches(".*[ai].*")) {
           return wordSet.contains(word);
         }
         for (int i = 0; i < word.length(); i++) {
@@ -112,7 +111,6 @@ public class WordFinderForkJoinService {
     wordSet.add("sing");
     wordSet.add("sin");
     wordSet.add("in");
-    wordSet.add("i");
     ForkJoinPool forkJoinPool = new ForkJoinPool();
     List<String> set = forkJoinPool.invoke(new WordFinderTask(List.of("startling")));
 

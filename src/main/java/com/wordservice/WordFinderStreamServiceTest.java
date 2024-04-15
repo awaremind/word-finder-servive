@@ -26,7 +26,6 @@ class WordFinderStreamServiceTest {
     wordSet.add("sing");
     wordSet.add("sin");
     wordSet.add("in");
-    wordSet.add("i");
   }
 
 
